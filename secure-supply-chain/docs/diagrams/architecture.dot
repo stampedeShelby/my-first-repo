@@ -1,0 +1,25 @@
+digraph G { 
+  graph [fontname="Helvetica", fontsize=13, bgcolor="white", pad=0.3, nodesep=0.35, ranksep=0.42, dpi=200];
+  node  [fontname="Helvetica", fontsize=12, shape=box, style="rounded,filled", fillcolor="#ffffff",
+         color="#51606f", penwidth=1.2, margin="0.18,0.07"];
+  edge  [fontname="Helvetica", fontsize=10, color="#51606f", penwidth=1.2, arrowsize=0.7];
+ rankdir=TB;
+  subgraph cluster_v { label="VENDOR (trusted build & release zone)"; style="rounded,filled"; fillcolor="#e8f1fb"; color="#8fb3d9";
+    dev [label="Developer\n(commit, MFA)"]; repo [label="Source Repository\n(protected branch)"];
+    build [label="Secure CI/CD Build\n(isolated builder)"]; tests [label="Security Testing\n(exfiltration rules)"];
+    hash [label="SHA-256\nfingerprint + provenance"]; signer [label="Signing Service\nHSM / KMS concept\n(RBAC + MFA, Ed25519)", fillcolor="#d6e6f7"];
+    man [label="Signed Manifest + Artifact\n(+ detached signature)"];
+    dev -> repo -> build -> tests -> hash -> signer -> man; }
+  subgraph cluster_d { label="DISTRIBUTION (untrusted)"; style="rounded,filled"; fillcolor="#f1f3f5"; color="#b8c0c8";
+    reg [label="Artifact Registry\n+ root-signed trust policy"]; tls [label="TLS 1.3 channel", shape=box, style="rounded,dashed,filled"]; }
+  subgraph cluster_c { label="CUSTOMER CI/CD (verification zone)"; style="rounded,filled"; fillcolor="#e8f6ee"; color="#94c9a9";
+    cci [label="Customer CI/CD\n(pinned root public key)"];
+    eng [shape=record, style="rounded,filled", fillcolor="#ffffff", label="{Verification Engine|{Signature\nverification|SHA-256\nverification|Key\nstatus}|{Artifact / version\nstatus|Provenance|Security\npolicy}}"];
+    gate [label="Security Gate", shape=diamond, style="filled", fillcolor="#ffffff", margin="0.05,0.05"];
+    dep [label="DEPLOY", fillcolor="#d5f0de", color="#1a7f4b", fontcolor="#1a7f4b"];
+    blk [label="BLOCK\n+ security event", fillcolor="#fbd9d6", color="#b42318", fontcolor="#b42318"];
+    cci -> eng -> gate; gate -> dep [label=" all checks pass", fontcolor="#1a7f4b"]; gate -> blk [label=" any failure", fontcolor="#b42318"]; }
+  audit [label="Hash-chained Audit / Transparency Log", fillcolor="#fff6e0", color="#b7791f"];
+  man -> reg -> tls -> cci;
+  dep -> audit; blk -> audit; signer -> audit [style=dashed, label=" every signing op"];
+}

@@ -1,0 +1,15 @@
+digraph G { 
+  graph [fontname="Helvetica", fontsize=13, bgcolor="white", pad=0.3, nodesep=0.35, ranksep=0.42, dpi=200];
+  node  [fontname="Helvetica", fontsize=12, shape=box, style="rounded,filled", fillcolor="#ffffff",
+         color="#51606f", penwidth=1.2, margin="0.18,0.07"];
+  edge  [fontname="Helvetica", fontsize=10, color="#51606f", penwidth=1.2, arrowsize=0.7];
+ rankdir=LR; ranksep=0.35;
+  a0 [label="Error in Docker image\ncreation process", fillcolor="#fdecea", color="#b42318"];
+  a1 [label="Credential extracted\n(HMAC key for GCS\nservice account)", fillcolor="#fdecea", color="#b42318"];
+  a2 [label="Bash Uploader in\ncloud storage modified\n(from 31 Jan 2021)", fillcolor="#fdecea", color="#b42318"];
+  a3 [label="Customers download\nvia HTTPS from the\ngenuine domain"];
+  a4 [label="Script runs in\ncustomer CI", ];
+  a5 [label="git remote -v + env\n(tokens, keys) sent to\nattacker server", fillcolor="#fdecea", color="#b42318"];
+  a6 [label="1 Apr 2021: customer\nnotices checksum\nmismatch", fillcolor="#e8f6ee", color="#1a7f4b"];
+  a0 -> a1 -> a2 -> a3 -> a4 -> a5; a3 -> a6 [style=dashed, label=" detected ~2 months later"];
+}

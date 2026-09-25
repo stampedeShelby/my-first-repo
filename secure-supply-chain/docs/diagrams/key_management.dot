@@ -1,0 +1,22 @@
+digraph G { 
+  graph [fontname="Helvetica", fontsize=13, bgcolor="white", pad=0.3, nodesep=0.35, ranksep=0.42, dpi=200];
+  node  [fontname="Helvetica", fontsize=12, shape=box, style="rounded,filled", fillcolor="#ffffff",
+         color="#51606f", penwidth=1.2, margin="0.18,0.07"];
+  edge  [fontname="Helvetica", fontsize=10, color="#51606f", penwidth=1.2, arrowsize=0.7];
+ rankdir=LR;
+  subgraph cluster_v { label="Vendor"; style="rounded,filled"; fillcolor="#e8f1fb"; color="#8fb3d9";
+    vendor [label="Release manager\n(RBAC role + TOTP MFA)"];
+    svc [label="Secure Signing Service\n(sign API only)"];
+    hsm [label="HSM / KMS concept\n(prototype: AES-256\nencrypted PKCS#8, 0600)", fillcolor="#d6e6f7"];
+    root [label="Root key (offline)\nsigns trust policy only"];
+    rel [label="Release key(s) Ed25519\nactive / retired / revoked"];
+    vendor -> svc -> hsm; hsm -> rel [dir=none, style=dashed]; hsm -> root [dir=none, style=dashed];
+    root -> tp [label=" signs"]; rel -> svc [style=invis];
+    tp [label="Trust policy vN\nkeys + status + revoked\nversions + min versions\n(expires 30 days)", fillcolor="#ffffff"]; }
+  subgraph cluster_c { label="Customer"; style="rounded,filled"; fillcolor="#e8f6ee"; color="#94c9a9";
+    pin [label="Pinned root\npublic key (out-of-band)"];
+    ver [label="Signature\nverification"]; }
+  tp -> ver [label=" trusted release public keys"]; pin -> ver;
+  log [label="Audit log: KEY_GENERATE, KEY_ROTATE,\nKEY_REVOKE, SIGN_RELEASE ...", fillcolor="#fff6e0", color="#b7791f"];
+  svc -> log [style=dashed];
+}

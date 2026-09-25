@@ -1,0 +1,128 @@
+[
+  {
+    "id": "1",
+    "scenario": "Legitimate artifact v1.0.0",
+    "expected": "DEPLOY",
+    "actual": "DEPLOY",
+    "status_code": "PASS",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "2",
+    "scenario": "Tampered artifact (1 line added)",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "HASH_MISMATCH",
+    "result": "PASS",
+    "detail": "sha256,artifact_signature,security_policy"
+  },
+  {
+    "id": "2b",
+    "scenario": "Tampered artifact + forged manifest hash",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "INVALID_SIGNATURE",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "3a",
+    "scenario": "Signed with attacker's own key",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "UNAUTHORIZED_KEY",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "3b",
+    "scenario": "Attacker claims vendor key ID",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "INVALID_SIGNATURE",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "3d",
+    "scenario": "Unauthorized signing attempt (bob, developer)",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "UNAUTHORIZED_SIGNER",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "3e",
+    "scenario": "Release manager with wrong MFA code",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "UNAUTHORIZED_SIGNER",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "3c-",
+    "scenario": "Stolen key BEFORE revocation (content scan)",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "POLICY_VIOLATION",
+    "result": "PASS",
+    "detail": "signatures valid; blocked only by customer-side content scan"
+  },
+  {
+    "id": "3c",
+    "scenario": "Stolen key AFTER revocation",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "REVOKED",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "9",
+    "scenario": "Valid new release v1.0.1 (new key)",
+    "expected": "DEPLOY",
+    "actual": "DEPLOY",
+    "status_code": "PASS",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "4a",
+    "scenario": "Replay old v1.0.0 (revoked signing key)",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "REVOKED",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "4b",
+    "scenario": "Replay revoked v1.0.1 (valid signature)",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "REVOKED",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "5",
+    "scenario": "Registry trust policy modified",
+    "expected": "BLOCK",
+    "actual": "BLOCK",
+    "status_code": "INVALID_TRUST_POLICY",
+    "result": "PASS",
+    "detail": ""
+  },
+  {
+    "id": "6",
+    "scenario": "Legitimate artifact restored (v1.0.2)",
+    "expected": "DEPLOY",
+    "actual": "DEPLOY",
+    "status_code": "PASS",
+    "result": "PASS",
+    "detail": ""
+  }
+]

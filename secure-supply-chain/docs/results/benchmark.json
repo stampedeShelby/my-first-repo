@@ -1,0 +1,214 @@
+{
+  "tests": [
+    {
+      "id": "TC01",
+      "condition": "Valid signed artifact",
+      "expected": "PASS / DEPLOY",
+      "actual": "PASS / DEPLOY",
+      "status": "PASS"
+    },
+    {
+      "id": "TC02",
+      "condition": "One malicious line added (Codecov-style)",
+      "expected": "BLOCK - HASH_MISMATCH",
+      "actual": "BLOCK - HASH_MISMATCH",
+      "status": "PASS"
+    },
+    {
+      "id": "TC02b",
+      "condition": "Single bit flipped in artifact",
+      "expected": "BLOCK - HASH_MISMATCH",
+      "actual": "BLOCK - HASH_MISMATCH",
+      "status": "PASS"
+    },
+    {
+      "id": "TC03",
+      "condition": "Corrupted manifest signature",
+      "expected": "BLOCK - INVALID_SIGNATURE",
+      "actual": "BLOCK - INVALID_SIGNATURE",
+      "status": "PASS"
+    },
+    {
+      "id": "TC03b",
+      "condition": "Attacker claims vendor key ID",
+      "expected": "BLOCK - INVALID_SIGNATURE",
+      "actual": "BLOCK - INVALID_SIGNATURE",
+      "status": "PASS"
+    },
+    {
+      "id": "TC04",
+      "condition": "Wrong pinned public (root) key",
+      "expected": "BLOCK - INVALID_TRUST_POLICY",
+      "actual": "BLOCK - INVALID_TRUST_POLICY",
+      "status": "PASS"
+    },
+    {
+      "id": "TC04b",
+      "condition": "Signed with attacker's own key",
+      "expected": "BLOCK - UNAUTHORIZED_KEY",
+      "actual": "BLOCK - UNAUTHORIZED_KEY",
+      "status": "PASS"
+    },
+    {
+      "id": "TC05",
+      "condition": "Signing key revoked",
+      "expected": "BLOCK - REVOKED",
+      "actual": "BLOCK - REVOKED",
+      "status": "PASS"
+    },
+    {
+      "id": "TC05b",
+      "condition": "Stolen key signs payload",
+      "expected": "BLOCK - POLICY_VIOLATION, then REVOKED",
+      "actual": "BLOCK - POLICY_VIOLATION, then REVOKED",
+      "status": "PASS"
+    },
+    {
+      "id": "TC06",
+      "condition": "Manifest SHA-256 replaced",
+      "expected": "BLOCK - INVALID_SIGNATURE",
+      "actual": "BLOCK - INVALID_SIGNATURE",
+      "status": "PASS"
+    },
+    {
+      "id": "TC06b",
+      "condition": "Manifest field removed",
+      "expected": "BLOCK - INVALID_MANIFEST",
+      "actual": "BLOCK - INVALID_MANIFEST",
+      "status": "PASS"
+    },
+    {
+      "id": "TC06c",
+      "condition": "Provenance builder changed",
+      "expected": "BLOCK - INVALID_SIGNATURE + INVALID_PROVENANCE",
+      "actual": "BLOCK - INVALID_SIGNATURE + INVALID_PROVENANCE",
+      "status": "PASS"
+    },
+    {
+      "id": "TC07",
+      "condition": "Replay of older version (rollback)",
+      "expected": "BLOCK - REPLAY_BLOCKED",
+      "actual": "BLOCK - REPLAY_BLOCKED",
+      "status": "PASS"
+    },
+    {
+      "id": "TC07b",
+      "condition": "Revoked / below-minimum version",
+      "expected": "BLOCK - REVOKED / REPLAY_BLOCKED",
+      "actual": "BLOCK - REVOKED / REPLAY_BLOCKED",
+      "status": "PASS"
+    },
+    {
+      "id": "TC07c",
+      "condition": "Old trust policy replayed",
+      "expected": "BLOCK - INVALID_TRUST_POLICY",
+      "actual": "BLOCK - INVALID_TRUST_POLICY",
+      "status": "PASS"
+    },
+    {
+      "id": "TC07d",
+      "condition": "Trust policy edited on registry",
+      "expected": "BLOCK - INVALID_TRUST_POLICY",
+      "actual": "BLOCK - INVALID_TRUST_POLICY",
+      "status": "PASS"
+    },
+    {
+      "id": "TC08",
+      "condition": "Wrong role / bad MFA / unknown user signs",
+      "expected": "DENIED - UNAUTHORIZED_SIGNER",
+      "actual": "DENIED - UNAUTHORIZED_SIGNER",
+      "status": "PASS"
+    },
+    {
+      "id": "TC08b",
+      "condition": "Exfiltration code in source",
+      "expected": "BUILD STOPPED",
+      "actual": "BUILD STOPPED",
+      "status": "PASS"
+    },
+    {
+      "id": "TC09",
+      "condition": "New release after key rotation",
+      "expected": "PASS / DEPLOY",
+      "actual": "PASS / DEPLOY",
+      "status": "PASS"
+    },
+    {
+      "id": "TC10",
+      "condition": "Audit log row edited",
+      "expected": "Chain BROKEN detected",
+      "actual": "Chain BROKEN detected",
+      "status": "PASS"
+    },
+    {
+      "id": "TC11",
+      "condition": "Key file encrypted, 0600, wrong passphrase",
+      "expected": "Protected",
+      "actual": "Protected",
+      "status": "PASS"
+    },
+    {
+      "id": "TC12",
+      "condition": "TLS 1.2 downgrade attempt",
+      "expected": "TLS 1.3 only",
+      "actual": "TLS 1.3 only",
+      "status": "PASS"
+    },
+    {
+      "id": "TC13",
+      "condition": "Tampered file served over valid TLS",
+      "expected": "BLOCK - HASH_MISMATCH",
+      "actual": "BLOCK - HASH_MISMATCH",
+      "status": "PASS"
+    },
+    {
+      "id": "TC14",
+      "condition": "End-to-end pipeline, legit release",
+      "expected": "DEPLOY",
+      "actual": "DEPLOY",
+      "status": "PASS"
+    },
+    {
+      "id": "TC15",
+      "condition": "200 random mutations",
+      "expected": "0 accepted (FAR = 0)",
+      "actual": "0 accepted (FAR = 0)",
+      "status": "PASS"
+    }
+  ],
+  "benchmark": {
+    "legitimate_runs": 200,
+    "legitimate_pass_rate": 1.0,
+    "verification_ms_mean": 2.171,
+    "verification_ms_median": 2.045,
+    "verification_ms_p95": 2.626,
+    "tampered_samples": 1000,
+    "tampered_detected": 1000,
+    "detection_rate": 1.0,
+    "false_acceptance_rate": 0.0,
+    "tampered_verification_ms_mean": 2.219,
+    "primitives_by_size": {
+      "1 KB": {
+        "sha256_ms": 0.007,
+        "sign_ms": 0.07,
+        "verify_ms": 0.142
+      },
+      "100 KB": {
+        "sha256_ms": 0.277,
+        "sign_ms": 0.395,
+        "verify_ms": 0.298
+      },
+      "1 MB": {
+        "sha256_ms": 2.556,
+        "sign_ms": 4.113,
+        "verify_ms": 1.978
+      },
+      "10 MB": {
+        "sha256_ms": 25.374,
+        "sign_ms": 44.44,
+        "verify_ms": 21.642
+      }
+    },
+    "python": "3.11.15"
+  }
+}

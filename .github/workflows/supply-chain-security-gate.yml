@@ -1,0 +1,43 @@
+name: Supply-chain security gate
+
+on:
+  push:
+    paths: ["secure-supply-chain/**", ".github/workflows/supply-chain-security-gate.yml"]
+  pull_request:
+    paths: ["secure-supply-chain/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: secure-supply-chain
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install cryptography pytest
+      - name: Unit + attack tests
+        run: python -m pytest -v
+      - name: Attack simulation
+        run: python -m attack_simulation.run_all
+      - name: End-to-end pipeline (build -> sign -> TLS 1.3 -> verify -> deploy)
+        env:
+          SSCS_KEY_PASSPHRASE: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          python bootstrap.py --reset
+          python -m ci.security_gate pipeline --version 1.0.0
+      - name: Gate must BLOCK a tampered artifact
+        run: |
+          cp workspace/customer/downloads/secure-uploader-1.0.0.sh /tmp/t.sh
+          python -m attack_simulation.tamper /tmp/t.sh
+          if python -m ci.security_gate verify --no-deploy --artifact /tmp/t.sh \
+               --manifest workspace/customer/downloads/secure-uploader-1.0.0.sh.manifest.json; then
+            echo "tampered artifact was accepted"; exit 1
+          fi
+      - name: Audit log
+        run: python -m audit.audit_logger

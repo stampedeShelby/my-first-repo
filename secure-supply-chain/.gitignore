@@ -1,0 +1,10 @@
+# runtime state (contains private keys, TLS keys, audit DBs) - never commit
+workspace/
+demo_workspace/
+keys/
+*.pem
+*.key
+__pycache__/
+.pytest_cache/
+docs/results/junit.xml
+dashboard/index.html

@@ -1,0 +1,18 @@
+digraph G { 
+  graph [fontname="Helvetica", fontsize=13, bgcolor="white", pad=0.3, nodesep=0.35, ranksep=0.42, dpi=200];
+  node  [fontname="Helvetica", fontsize=12, shape=box, style="rounded,filled", fillcolor="#ffffff",
+         color="#51606f", penwidth=1.2, margin="0.18,0.07"];
+  edge  [fontname="Helvetica", fontsize=10, color="#51606f", penwidth=1.2, arrowsize=0.7];
+ rankdir=LR;
+  subgraph cluster_v { label="Vendor signing"; style="rounded,filled"; fillcolor="#e8f1fb"; color="#8fb3d9";
+    art [label="Artifact bytes"]; h [label="SHA-256"]; prov [label="Provenance"];
+    sa [label="Ed25519 sign\n(ctx: artifact)"]; m [label="Manifest\n{artifact, version, sha256,\nkey_id, timestamp,\nartifact_signature,\nprovenance_sha256}"];
+    sm [label="Ed25519 sign\n(ctx: manifest)"]; sk [label="Private key\n(never distributed)", shape=cylinder, fillcolor="#d6e6f7"];
+    art -> h -> m; art -> sa -> m; prov -> m; m -> sm; sk -> sa [style=dashed]; sk -> sm [style=dashed]; }
+  subgraph cluster_c { label="Customer verification"; style="rounded,filled"; fillcolor="#e8f6ee"; color="#94c9a9";
+    pk [label="Trusted public key\n(from root-signed\ntrust policy)", shape=cylinder];
+    v1 [label="Verify manifest\nsignature"]; v2 [label="Recompute SHA-256\n= manifest.sha256 ?"]; v3 [label="Verify artifact\nsignature"];
+    ok [label="Integrity AND\nauthenticity proven", fillcolor="#d5f0de", color="#1a7f4b", fontcolor="#1a7f4b"];
+    pk -> v1; pk -> v3; v1 -> ok; v2 -> ok; v3 -> ok; }
+  sm -> v1 [label=" signed manifest"]; art -> v2 [label=" downloaded bytes"];
+}

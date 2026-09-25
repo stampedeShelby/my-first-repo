@@ -1,0 +1,13 @@
+{
+  "_comment": "Customer-side CI/CD security policy enforced by the security gate before any vendor artifact is deployed.",
+  "allowed_hash_algorithms": ["SHA-256"],
+  "allowed_signature_algorithms": ["Ed25519"],
+  "allow_retired_keys_for_old_releases": true,
+  "approved_builders": ["vendor-secure-builder-01"],
+  "approved_source_repositories": ["https://git.vendor.example/secure-uploader.git"],
+  "anti_rollback": true,
+  "max_manifest_age_days": 365,
+  "require_provenance": true,
+  "require_security_tests_passed": true,
+  "scan_artifact_content": true
+}
