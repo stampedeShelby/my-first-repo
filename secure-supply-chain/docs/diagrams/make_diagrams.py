@@ -39,15 +39,17 @@ DIAGRAMS = {
   dep -> audit; blk -> audit; signer -> audit [style=dashed, label=" every signing op"];
 }}""",
 
-"codecov_attack": f"""digraph G {{ {BASE} rankdir=LR; ranksep=0.35;
-  a0 [label="Error in Docker image\\ncreation process", fillcolor="{ATT}", color="{BAD}"];
-  a1 [label="Credential extracted\\n(HMAC key for GCS\\nservice account)", fillcolor="{ATT}", color="{BAD}"];
-  a2 [label="Bash Uploader in\\ncloud storage modified\\n(from 31 Jan 2021)", fillcolor="{ATT}", color="{BAD}"];
-  a3 [label="Customers download\\nvia HTTPS from the\\ngenuine domain"];
-  a4 [label="Script runs in\\ncustomer CI", ];
-  a5 [label="git remote -v + env\\n(tokens, keys) sent to\\nattacker server", fillcolor="{ATT}", color="{BAD}"];
-  a6 [label="1 Apr 2021: customer\\nnotices checksum\\nmismatch", fillcolor="#e8f6ee", color="{OK}"];
-  a0 -> a1 -> a2 -> a3 -> a4 -> a5; a3 -> a6 [style=dashed, label=" detected ~2 months later"];
+"codecov_attack": f"""digraph G {{ {BASE} rankdir=TB; newrank=true; nodesep=0.5; ranksep=0.55;
+  a0 [label="1. Error in Docker image\\ncreation process", fillcolor="{ATT}", color="{BAD}"];
+  a1 [label="2. Credential extracted\\n(HMAC key for GCS\\nservice account)", fillcolor="{ATT}", color="{BAD}"];
+  a2 [label="3. Bash Uploader in cloud\\nstorage modified\\n(from 31 Jan 2021)", fillcolor="{ATT}", color="{BAD}"];
+  a3 [label="4. Customers download it\\nover HTTPS from the\\ngenuine domain"];
+  a4 [label="5. Script runs inside\\ncustomer CI with\\naccess to all secrets"];
+  a5 [label="6. git remote -v + env\\n(tokens, keys) sent to\\nattacker server", fillcolor="{ATT}", color="{BAD}"];
+  a6 [label="7. 1 Apr 2021: a customer\\nnotices checksum mismatch\\n(disclosed 15 Apr 2021)", fillcolor="#e8f6ee", color="{OK}"];
+  {{rank=same; a0; a1; a2; a3}}
+  {{rank=same; a6; a5; a4}}
+  a0 -> a1 -> a2 -> a3; a3 -> a4; a5 -> a4 [dir=back]; a6 -> a5 [dir=back, style=dashed, label=" ~2 months later"];
 }}""",
 
 "key_management": f"""digraph G {{ {BASE} rankdir=LR;
@@ -68,17 +70,23 @@ DIAGRAMS = {
   svc -> log [style=dashed];
 }}""",
 
-"pipeline_gate": f"""digraph G {{ {BASE} rankdir=LR; ranksep=0.28; nodesep=0.25;
+"pipeline_gate": f"""digraph G {{ {BASE} rankdir=TB; newrank=true; nodesep=0.3; ranksep=0.5;
   node [fontsize=11];
   s1 [label="Build"]; s2 [label="Security\\ntests"]; s3 [label="SHA-256"]; s4 [label="Sign\\n(RBAC+MFA)"];
-  s5 [label="Record\\nprovenance"]; s6 [label="Publish"]; s7 [label="TLS 1.3\\ndownload"];
-  c1 [label="Verify\\nsignature"]; c2 [label="Verify\\nSHA-256"]; c3 [label="Key\\nstatus"]; c4 [label="Artifact /\\nversion status"];
-  c5 [label="Provenance\\n+ policy"];
+  s5 [label="Record\\nprovenance"]; s6 [label="Publish to\\nregistry"];
+  s7 [label="TLS 1.3\\ndownload"]; c1 [label="Verify\\nsignature"]; c2 [label="Verify\\nSHA-256"]; c3 [label="Key\\nstatus"];
+  c4 [label="Artifact /\\nversion status"]; c5 [label="Provenance\\n+ policy"];
   d [label="DEPLOY", fillcolor="#d5f0de", color="{OK}", fontcolor="{OK}"];
-  x [label="STOP PIPELINE\\nBLOCK + security event\\n+ audit record", fillcolor="#fbd9d6", color="{BAD}", fontcolor="{BAD}"];
-  s1 -> s2 -> s3 -> s4 -> s5 -> s6 -> s7 -> c1 -> c2 -> c3 -> c4 -> c5 -> d;
-  {{ s2 s4 c1 c2 c3 c4 c5 }} -> x [color="{BAD}", style=dashed, arrowsize=0.5];
-  {{rank=same; c3; x}}
+  x [label="ANY FAILED STAGE (incl. security tests / unauthorised signing)\\nSTOP PIPELINE: BLOCK + security event + audit record", fillcolor="#fbd9d6", color="{BAD}", fontcolor="{BAD}"];
+  {{rank=same; s1; s2; s3; s4; s5; s6}}
+  {{rank=same; s7; c1; c2; c3; c4; c5; d}}
+  s1 -> s2 -> s3 -> s4 -> s5 -> s6; s6 -> s7 [constraint=false];
+  s7 -> c1 -> c2 -> c3 -> c4 -> c5 -> d;
+  s1 -> s7 [style=invis];
+  {{ c1 c2 c3 c4 c5 }} -> x [color="{BAD}", style=dashed, arrowsize=0.5];
+  vendor [label="Vendor pipeline", shape=plaintext, style="", fontcolor="#51606f"];
+  cust [label="Customer pipeline", shape=plaintext, style="", fontcolor="#51606f"];
+  {{rank=same; vendor; s1}} {{rank=same; cust; s7}} vendor -> s1 [style=invis]; cust -> s7 [style=invis];
 }}""",
 
 "crypto_flow": f"""digraph G {{ {BASE} rankdir=LR;

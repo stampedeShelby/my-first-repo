@@ -3,15 +3,21 @@ digraph G {
   node  [fontname="Helvetica", fontsize=12, shape=box, style="rounded,filled", fillcolor="#ffffff",
          color="#51606f", penwidth=1.2, margin="0.18,0.07"];
   edge  [fontname="Helvetica", fontsize=10, color="#51606f", penwidth=1.2, arrowsize=0.7];
- rankdir=LR; ranksep=0.28; nodesep=0.25;
+ rankdir=TB; newrank=true; nodesep=0.3; ranksep=0.5;
   node [fontsize=11];
   s1 [label="Build"]; s2 [label="Security\ntests"]; s3 [label="SHA-256"]; s4 [label="Sign\n(RBAC+MFA)"];
-  s5 [label="Record\nprovenance"]; s6 [label="Publish"]; s7 [label="TLS 1.3\ndownload"];
-  c1 [label="Verify\nsignature"]; c2 [label="Verify\nSHA-256"]; c3 [label="Key\nstatus"]; c4 [label="Artifact /\nversion status"];
-  c5 [label="Provenance\n+ policy"];
+  s5 [label="Record\nprovenance"]; s6 [label="Publish to\nregistry"];
+  s7 [label="TLS 1.3\ndownload"]; c1 [label="Verify\nsignature"]; c2 [label="Verify\nSHA-256"]; c3 [label="Key\nstatus"];
+  c4 [label="Artifact /\nversion status"]; c5 [label="Provenance\n+ policy"];
   d [label="DEPLOY", fillcolor="#d5f0de", color="#1a7f4b", fontcolor="#1a7f4b"];
-  x [label="STOP PIPELINE\nBLOCK + security event\n+ audit record", fillcolor="#fbd9d6", color="#b42318", fontcolor="#b42318"];
-  s1 -> s2 -> s3 -> s4 -> s5 -> s6 -> s7 -> c1 -> c2 -> c3 -> c4 -> c5 -> d;
-  { s2 s4 c1 c2 c3 c4 c5 } -> x [color="#b42318", style=dashed, arrowsize=0.5];
-  {rank=same; c3; x}
+  x [label="ANY FAILED STAGE (incl. security tests / unauthorised signing)\nSTOP PIPELINE: BLOCK + security event + audit record", fillcolor="#fbd9d6", color="#b42318", fontcolor="#b42318"];
+  {rank=same; s1; s2; s3; s4; s5; s6}
+  {rank=same; s7; c1; c2; c3; c4; c5; d}
+  s1 -> s2 -> s3 -> s4 -> s5 -> s6; s6 -> s7 [constraint=false];
+  s7 -> c1 -> c2 -> c3 -> c4 -> c5 -> d;
+  s1 -> s7 [style=invis];
+  { c1 c2 c3 c4 c5 } -> x [color="#b42318", style=dashed, arrowsize=0.5];
+  vendor [label="Vendor pipeline", shape=plaintext, style="", fontcolor="#51606f"];
+  cust [label="Customer pipeline", shape=plaintext, style="", fontcolor="#51606f"];
+  {rank=same; vendor; s1} {rank=same; cust; s7} vendor -> s1 [style=invis]; cust -> s7 [style=invis];
 }

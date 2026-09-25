@@ -3,13 +3,15 @@ digraph G {
   node  [fontname="Helvetica", fontsize=12, shape=box, style="rounded,filled", fillcolor="#ffffff",
          color="#51606f", penwidth=1.2, margin="0.18,0.07"];
   edge  [fontname="Helvetica", fontsize=10, color="#51606f", penwidth=1.2, arrowsize=0.7];
- rankdir=LR; ranksep=0.35;
-  a0 [label="Error in Docker image\ncreation process", fillcolor="#fdecea", color="#b42318"];
-  a1 [label="Credential extracted\n(HMAC key for GCS\nservice account)", fillcolor="#fdecea", color="#b42318"];
-  a2 [label="Bash Uploader in\ncloud storage modified\n(from 31 Jan 2021)", fillcolor="#fdecea", color="#b42318"];
-  a3 [label="Customers download\nvia HTTPS from the\ngenuine domain"];
-  a4 [label="Script runs in\ncustomer CI", ];
-  a5 [label="git remote -v + env\n(tokens, keys) sent to\nattacker server", fillcolor="#fdecea", color="#b42318"];
-  a6 [label="1 Apr 2021: customer\nnotices checksum\nmismatch", fillcolor="#e8f6ee", color="#1a7f4b"];
-  a0 -> a1 -> a2 -> a3 -> a4 -> a5; a3 -> a6 [style=dashed, label=" detected ~2 months later"];
+ rankdir=TB; newrank=true; nodesep=0.5; ranksep=0.55;
+  a0 [label="1. Error in Docker image\ncreation process", fillcolor="#fdecea", color="#b42318"];
+  a1 [label="2. Credential extracted\n(HMAC key for GCS\nservice account)", fillcolor="#fdecea", color="#b42318"];
+  a2 [label="3. Bash Uploader in cloud\nstorage modified\n(from 31 Jan 2021)", fillcolor="#fdecea", color="#b42318"];
+  a3 [label="4. Customers download it\nover HTTPS from the\ngenuine domain"];
+  a4 [label="5. Script runs inside\ncustomer CI with\naccess to all secrets"];
+  a5 [label="6. git remote -v + env\n(tokens, keys) sent to\nattacker server", fillcolor="#fdecea", color="#b42318"];
+  a6 [label="7. 1 Apr 2021: a customer\nnotices checksum mismatch\n(disclosed 15 Apr 2021)", fillcolor="#e8f6ee", color="#1a7f4b"];
+  {rank=same; a0; a1; a2; a3}
+  {rank=same; a6; a5; a4}
+  a0 -> a1 -> a2 -> a3; a3 -> a4; a5 -> a4 [dir=back]; a6 -> a5 [dir=back, style=dashed, label=" ~2 months later"];
 }
