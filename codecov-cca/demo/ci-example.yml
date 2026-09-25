@@ -1,0 +1,20 @@
+# How a customer pipeline would call SignGate (GitHub Actions example).
+# BEFORE (vulnerable, what most Codecov users ran in 2021):
+#   - run: bash <(curl -s https://codecov.io/bash)
+# AFTER:
+name: tests
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install cryptography && python -m pytest --cov --cov-report=xml
+      - name: Download uploader bundle (artifact + manifest + CRL + log)
+        run: ./scripts/fetch_bundle.sh bucket/        # over HTTPS / TLS 1.3
+      - name: Verify-before-execute
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}  # only secret the uploader needs
+        # policy.json (pinned root + log public keys) is committed in this repo,
+        # NOT downloaded from the same bucket as the uploader.
+        run: python -m signgate.cli run --bucket bucket/ --policy .signgate/policy.json --state .signgate/state.json

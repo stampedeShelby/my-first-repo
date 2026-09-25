@@ -1,0 +1,83 @@
+{
+  "scenarios": [
+    {
+      "id": "S1",
+      "scenario": "Legitimate signed release",
+      "result": "ALLOWED",
+      "pass": true,
+      "stopped_by": "-",
+      "reason": "all 6 checks passed"
+    },
+    {
+      "id": "S2",
+      "scenario": "Codecov 2021 attack: uploader edited in bucket",
+      "result": "BLOCKED",
+      "pass": true,
+      "stopped_by": "4. SHA-256 integrity",
+      "reason": "HASH MISMATCH: expected ea1d27b7a2f1.. got 06b7c8163077.."
+    },
+    {
+      "id": "S3",
+      "scenario": "Attacker also rewrites published SHA-256",
+      "result": "BLOCKED",
+      "pass": true,
+      "stopped_by": "3. Ed25519 signature",
+      "reason": "manifest signature INVALID (forged/edited)"
+    },
+    {
+      "id": "S4",
+      "scenario": "Attacker signs with own key + fake cert",
+      "result": "BLOCKED",
+      "pass": true,
+      "stopped_by": "1. Key certificate (PKI)",
+      "reason": "key certificate NOT signed by pinned root key"
+    },
+    {
+      "id": "S5",
+      "scenario": "Stolen release key, release not logged",
+      "result": "BLOCKED",
+      "pass": true,
+      "stopped_by": "6. Transparency log",
+      "reason": "release NOT recorded in transparency log"
+    },
+    {
+      "id": "S6",
+      "scenario": "Stolen key detected by monitor and revoked",
+      "result": "BLOCKED",
+      "pass": true,
+      "stopped_by": "2. Revocation list",
+      "reason": "release key a77a410d46088aae has been REVOKED"
+    },
+    {
+      "id": "S7",
+      "scenario": "Rollback to older signed version",
+      "result": "BLOCKED",
+      "pass": true,
+      "stopped_by": "5. Anti-rollback",
+      "reason": "version 1.3.0 older than 1.4.0 (downgrade)"
+    }
+  ],
+  "assume_breach": {
+    "legacy": [
+      "CODECOV_TOKEN",
+      "AWS_ACCESS_KEY_ID",
+      "AWS_SECRET_ACCESS_KEY",
+      "GITHUB_TOKEN",
+      "NPM_TOKEN",
+      "DOCKER_PASSWORD",
+      "GPG_SIGNING_KEY",
+      "DATABASE_URL"
+    ],
+    "signgate": [
+      "CODECOV_TOKEN"
+    ],
+    "total": 8
+  },
+  "monitor": {
+    "before": [],
+    "after": [
+      "ALERT: served uploader 06b7c8163077.. differs from signed release ea1d27b7a2f1.."
+    ]
+  },
+  "verify_ms": 0.56
+}

