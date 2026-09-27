@@ -1,0 +1,12 @@
+{
+  "artifact": "uploader.sh",
+  "version": "1.0.0",
+  "sha256": "2ae9d028d511c188b07044b2c1794a4e46c707c022ac9af6ca5398ad67c81619",
+  "algorithm": "SHA-256",
+  "signature_algorithm": "Ed25519",
+  "signer": "Vendor Release Server",
+  "key_id": "vendor_primary_v1",
+  "timestamp": "2026-09-26T10:18:13.029775+00:00",
+  "provenance_ref": "uploader.sh.provenance.json",
+  "signature": "wyL0xP1WQ4z4jbvKV9Akcujf8RlqpCRzZsYgfxvzKEjQaMBqQaTHaGZWKsuzjWhNXEzr/rXUpQ1fJwcPnjQuAg=="
+}

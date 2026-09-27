@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.bak
+# private signing keys must never be committed; run key generation locally
+*_priv.pem
+.vercel/

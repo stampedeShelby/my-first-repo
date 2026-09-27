@@ -1,0 +1,24 @@
+{
+  "schema_version": "https://slsa.dev/provenance/v1",
+  "artifact_name": "uploader_v1.0.1.sh",
+  "version": "1.0.1",
+  "artifact_sha256": "bddd4b1e1bdfb346179990758b900c9701343bdf63d8dfca048a07ee43141e6c",
+  "source_repository": "https://github.com/vendor/secure-uploader.git",
+  "commit_id": "7f8b91a2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+  "build_id": "BUILD-20260926101813-PROD",
+  "build_timestamp": "2026-09-26T10:18:13.362761+00:00",
+  "builder_identity": "Vendor Secure Build Cluster Worker #08 (Isolated Enclave)",
+  "dependencies": [
+    {
+      "name": "bash",
+      "version": "5.1.16",
+      "hash": "b2c01990479fdfa76cb58a0ebc89dffec9f44b413158b0abf1947fc9ec4bbd41"
+    },
+    {
+      "name": "curl",
+      "version": "7.81.0",
+      "hash": "a4d3bfdc24e12c1b9b5f54360e513813ff255fc7bca609a5c48b11116b3f71c4"
+    }
+  ],
+  "security_tests_passed": true
+}
