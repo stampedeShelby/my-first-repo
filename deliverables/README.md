@@ -1,5 +1,23 @@
 # INS (BCS701) CCA deliverables
 
+## Final submission: `final/`
+
+These describe **the team's submitted implementation** (`secure-supply-chain.zip`: `vendor/`, `verifier/`,
+`ci/`, `audit/`, `dashboard/app.py`, `demo.py`, `tests/test_supply_chain.py`).
+
+| File | What it is |
+|---|---|
+| `final/INS_CCA_Report_Codecov_Supply_Chain.docx` / `.pdf` | Report on the BMSIT format: cover, evaluation sheet, numbered contents, 10 chapters |
+| `final/INS_CCA_Presentation_Codecov_Supply_Chain.pptx` | 17 slides on the BCS701 format, with speaker notes |
+| `final/figures/` | Diagrams drawn from the submitted code, plus the dashboard screenshot |
+| `final/revoked_key_test_fix.patch` | Fix: Scenario 3A in `attack_simulation/revoked_key_test.py` overwrote the genuine `uploader.sh.manifest.json` |
+
+Rebuild: `python3 tools/final/make_figures.py && tools/final/make_final_report.sh && python3 tools/final/build_final_slides.py`
+
+---
+
+## Earlier draft (prototype built in this repository)
+
 **Case study:** Codecov Bash Uploader supply-chain attack (2021)
 **Title:** *Cryptographically Verified Software Supply Chain for Preventing
 Codecov-Style Supply-Chain Attacks*

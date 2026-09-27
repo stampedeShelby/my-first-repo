@@ -1,0 +1,28 @@
+--- a/attack_simulation/revoked_key_test.py	2026-09-27 10:33:16.254316357 +0000
++++ b/attack_simulation/revoked_key_test.py	2026-09-27 10:44:55.738612478 +0000
+@@ -8,6 +8,7 @@
+ import os
+ import json
+ import copy
++import shutil
+ import sys
+ 
+ # Ensure project imports resolve
+@@ -36,6 +37,9 @@
+     signer = ArtifactSigner(km)
+ 
+     rogue_manifest_path = target_artifact + ".rogue_manifest.json"
++    # sign_artifact() always writes <artifact>.manifest.json: keep the genuine manifest safe
++    genuine_backup = target_manifest + ".genuine.bak"
++    shutil.copyfile(target_manifest, genuine_backup)
+     rogue_manifest = signer.sign_artifact(
+         artifact_path=target_artifact,
+         version="1.0.0",
+@@ -43,6 +47,7 @@
+         priv_key_path=rogue_priv,
+         signer_name="Attacker Impersonator"
+     )
++    shutil.move(genuine_backup, target_manifest)  # restore the vendor-signed manifest
+     with open(rogue_manifest_path, "w", encoding="utf-8") as f:
+         json.dump(rogue_manifest, f, indent=2)
+ 
