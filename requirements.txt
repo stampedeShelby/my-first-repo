@@ -1,0 +1,3 @@
+# Dependencies for the Vercel deployment of team-project/dashboard (Flask dashboard)
+cryptography>=41.0.0
+flask>=3.0.0

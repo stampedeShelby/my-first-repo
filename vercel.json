@@ -1,0 +1,9 @@
+{
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{deliverables/**,secure-supply-chain/**,.github/**,**/*_priv.pem,**/__pycache__/**}"
+    }
+  },
+  "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }]
+}

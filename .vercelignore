@@ -1,0 +1,8 @@
+# Only team-project/ (the dashboard) is deployed from the repository root
+deliverables/
+secure-supply-chain/
+.github/
+**/__pycache__/
+**/*.pyc
+**/*.bak
+**/*_priv.pem
